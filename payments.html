@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Payments | 2FLY Integrated System</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+window.__SUPABASE_URL__ = "https://ngthitqzqtnvmsthwddl.supabase.co";
+    window.__SUPABASE_ANON_KEY__ = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndGhpdHF6cXRudm1zdGh3ZGRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjQ5NTEsImV4cCI6MjA4NDk0MDk1MX0.MSC3lSHfazA4vpbM69lwzkzxpws7aiGAQk8oVPTZXNw";
+    window.__ADMIN_EMAILS__ = ["gshoes@gmail.com","marian@gmail.com","aron@gmail.com"];
+    window.__ATTACHMENTS_BUCKET__ = "order_attachments";
+    window.__OWNER_EMAILS__ = ["gshoeswho@gmail.com"]; // Only these emails can delete orders
+    window.__GOOGLE_SHEETS_WEB_APP_URL__ = "https://script.google.com/macros/s/AKfycbwdfvOo2bFj_D62qwGZJfEArJnUOLkL-M_iBxPFjyew4aibaI3Vq9-ljdnHJrJ9ydXEGA/exec"; // Paste your Google Apps Script Web App URL here
+  </script>
+  <script defer src="./payments.js"></script>
+  <style>
+    :root{--bg:#070b15;--text:#e8ecff;--muted:#9aa6cf;--accent:#7c5cff;--danger:#ff6b6b;--ok:#33d69f;--warn:#ffbe78;--shadow:0 18px 60px rgba(0,0,0,.55);--radius:16px}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 500px at 55% 0%, rgba(124,92,255,.18), transparent 62%),var(--bg);color:var(--text);font:14px/1.4 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(7,11,21,.66);border-bottom:1px solid rgba(35,48,85,.65)}
+    .wrap{max-width:1180px;margin:0 auto;padding:16px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px}
+    .badge{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.35)}
+    h1{font-size:18px;margin:0}.brand p{margin:0;color:var(--muted);font-size:12px}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .btn,.chip,select,input,textarea{padding:9px 12px;border-radius:12px;border:1px solid rgba(35,48,85,.85);background:rgba(11,18,36,.75);color:var(--text);font-weight:650;text-decoration:none}
+    .btn{cursor:pointer}.btn.primary{background:var(--accent);border-color:rgba(124,92,255,.65)}.btn.danger{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.35);color:#ffd1d1}.btn.good{background:rgba(51,214,159,.16);border-color:rgba(51,214,159,.4);color:#caffef}.btn.warn{background:rgba(255,190,120,.14);border-color:rgba(255,190,120,.4);color:#ffe1be}
+    .chip{color:var(--muted);font-size:12px}.notice{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,107,107,.35);background:rgba(255,107,107,.10);color:#ffd1d1;margin-bottom:12px}
+    main{padding:18px 0 34px}.grid{display:grid;gap:14px}.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(4,1fr)}
+    .card{background:linear-gradient(180deg, rgba(13,22,48,.88), rgba(11,18,36,.88));border:1px solid rgba(35,48,85,.9);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px}
+    .hd{padding:14px;border-bottom:1px solid rgba(35,48,85,.55);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.hd h2{font-size:14px;margin:0}.bd{padding:14px}
+    label{display:block;margin:10px 0 6px;color:var(--muted);font-size:12px}input,select,textarea{width:100%;outline:none}textarea{min-height:88px;resize:vertical}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.box{padding:14px;border-radius:14px;border:1px solid rgba(35,48,85,.85);background:rgba(7,11,21,.40)}.num{font-size:22px;font-weight:900;letter-spacing:-.04em}.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:850}
+    .list{display:grid;gap:12px}.item{border:1px solid rgba(35,48,85,.70);border-radius:18px;padding:14px;background:rgba(7,11,21,.28)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.right{text-align:right}.muted{color:var(--muted)}.pill{font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid rgba(35,48,85,.85);background:rgba(7,11,21,.40);color:var(--muted);display:inline-flex}.pill.ok{border-color:rgba(51,214,159,.4);color:#caffef}.pill.warn{border-color:rgba(255,190,120,.4);color:#ffe1be}.pill.bad{border-color:rgba(255,107,107,.4);color:#ffd1d1}
+    table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px;border-bottom:1px solid rgba(35,48,85,.4);text-align:left}th{color:var(--muted);text-transform:uppercase;font-size:11px}.table-wrap{overflow:auto}
+    @media(max-width:900px){.two,.three,.four,.kpis{grid-template-columns:1fr}.topbar{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header><div class="wrap topbar">
+  <div class="brand"><div class="badge">💸</div><div><h1>Payments</h1><p>Verified payments become automatic Money In</p></div></div>
+  <div class="actions"><div id="userChip" class="chip">Checking session…</div><a class="btn" href="./orderpage.html">Orders</a><a class="btn" href="./expenses.html">Expenses</a><a class="btn" href="./finance.html">Finance</a><a class="btn" href="./dashboard.html">Dashboard</a><button id="btnLogout" class="btn danger">Logout</button></div>
+</div></header>
+<main><div class="wrap">
+  <div id="authError" class="notice" style="display:none"></div>
+
+  <section class="card"><div class="hd"><h2>Add Payment / Proof</h2><span class="chip">Counted as Money In only when VERIFIED</span></div>
+  <div class="bd">
+    <form id="paymentForm">
+      <div class="grid three">
+        <div>
+          <label>Link to Order</label>
+          <div class="row" style="gap:6px;align-items:stretch">
+            <select id="orderSelect" style="flex:1"><option value="">Manual / no order link</option></select>
+            <button class="btn" id="btnUseLatestOrder" type="button" title="Use newest unpaid/partial order">Use Latest</button>
+          </div>
+        </div>
+        <div><label>Order ID</label><input id="order_id" placeholder="ORD-001"></div>
+        <div><label>Customer Name</label><input id="customer_name" placeholder="Customer name"></div>
+      </div>
+      <div class="grid three">
+        <div><label>Payment Date</label><input id="payment_date" type="date"></div>
+        <div><label>Payment Method</label><select id="payment_method"><option value="GCash">GCash</option><option value="Cash">Cash</option></select></div>
+        <div><label>Amount Paid</label><input id="amount" type="number" step="0.01" min="0" required placeholder="0.00"></div>
+      </div>
+      <div class="grid three">
+        <div><label>Reference Number</label><input id="reference_number" placeholder="GCash ref / cash receipt"></div>
+        <div><label>Status</label><select id="payment_status"><option value="pending">Pending</option><option value="verified">Verified</option><option value="needs_review">Needs Review</option><option value="rejected">Rejected</option><option value="duplicate">Duplicate</option><option value="voided">Voided</option></select></div>
+        <div><label>Proof Screenshot</label><input id="proof" type="file" accept="image/*"></div>
+      </div>
+      <label>Notes</label><textarea id="notes" placeholder="Payment notes..."></textarea>
+      <div class="row" style="margin-top:12px"><button class="btn primary" id="btnSavePayment" type="submit">Save Payment</button><button class="btn" type="button" id="btnClear">Clear</button><span class="chip" id="formMsg">—</span></div>
+    </form>
+  </div></section>
+
+  <section class="card"><div class="hd"><h2>Payment Queue</h2><button class="btn" id="btnRefresh">↻ Refresh</button></div>
+  <div class="bd">
+    <div class="grid three">
+      <div><label>Search</label><input id="search" placeholder="order, customer, reference"></div>
+      <div><label>Status Filter</label><select id="statusFilter"><option value="pending">Pending</option><option value="verified">Verified</option><option value="needs_review">Needs Review</option><option value="rejected">Rejected</option><option value="duplicate">Duplicate</option><option value="voided">Voided</option><option value="all">All</option></select></div>
+      <div><label>Method</label><select id="methodFilter"><option value="all">All</option><option value="GCash">GCash</option><option value="Cash">Cash</option></select></div>
+    </div>
+    <div class="kpis" style="margin-top:12px">
+      <div class="box"><div class="num" id="kpiVerified">₱0</div><div class="lbl">Verified Total</div></div>
+      <div class="box"><div class="num" id="kpiPending">0</div><div class="lbl">Pending</div></div>
+      <div class="box"><div class="num" id="kpiReview">0</div><div class="lbl">Needs Review</div></div>
+      <div class="box"><div class="num" id="kpiCount">0</div><div class="lbl">Records</div></div>
+    </div>
+  </div></section>
+
+  <section id="paymentList" class="list"></section>
+</div></main>
+</body></html>

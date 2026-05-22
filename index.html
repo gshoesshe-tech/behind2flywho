@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2FLY System Login</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    /*
+      PASTE YOUR CONFIG HERE.
+
+      Use the same values from your other HTML files.
+      Do not put your password here.
+    */
+    window.__SUPABASE_URL__ = "https://ngthitqzqtnvmsthwddl.supabase.co";
+    window.__SUPABASE_ANON_KEY__ = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndGhpdHF6cXRudm1zdGh3ZGRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjQ5NTEsImV4cCI6MjA4NDk0MDk1MX0.MSC3lSHfazA4vpbM69lwzkzxpws7aiGAQk8oVPTZXNw";
+    window.__ATTACHMENTS_BUCKET__ = "order_attachments";
+    window.__GOOGLE_SHEETS_WEB_APP_URL__ = "https://script.google.com/macros/s/AKfycbwdfvOo2bFj_D62qwGZJfEArJnUOLkL-M_iBxPFjyew4aibaI3Vq9-ljdnHJrJ9ydXEGA/exec";
+    window.__OWNER_EMAILS__ = ["gshoeswho@gmail.com"];
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #05070d;
+      --card: rgba(12, 18, 35, 0.86);
+      --card-2: rgba(17, 25, 48, 0.78);
+      --line: rgba(95, 113, 168, 0.24);
+      --text: #f4f6ff;
+      --muted: #9ca8cf;
+      --soft: #c8d0f0;
+      --accent: #7c5cff;
+      --accent-2: #a995ff;
+      --danger: #ff7070;
+      --success: #47e6ad;
+      --shadow: 0 22px 80px rgba(0, 0, 0, 0.62);
+      --radius: 28px;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(124, 92, 255, 0.34), transparent 30rem),
+        radial-gradient(circle at 88% 8%, rgba(71, 230, 173, 0.12), transparent 28rem),
+        linear-gradient(180deg, #070b15 0%, var(--bg) 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent 75%);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+      gap: 28px;
+      align-items: center;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 34px 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      padding: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+      color: var(--soft);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(16px);
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), #3b2aa8);
+      box-shadow: 0 12px 28px rgba(124, 92, 255, 0.35);
+      color: white;
+      font-weight: 950;
+      letter-spacing: -0.08em;
+    }
+
+    h1 {
+      margin: 28px 0 16px;
+      max-width: 720px;
+      font-size: clamp(44px, 7vw, 86px);
+      line-height: 0.88;
+      letter-spacing: -0.075em;
+    }
+
+    .hero p {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 610px;
+      margin-top: 28px;
+    }
+
+    .feature {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.045);
+      border-radius: 20px;
+      padding: 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .feature strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .feature span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .login-card {
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.075), transparent 28%),
+        var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(22px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, rgba(124,92,255,0.35), transparent 34%, rgba(71,230,173,0.10));
+      pointer-events: none;
+      opacity: 0.6;
+      mask: linear-gradient(#000, transparent 30%);
+    }
+
+    .login-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.055em;
+    }
+
+    .card-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status-chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px;
+      border: 1px solid rgba(71,230,173,0.24);
+      background: rgba(71,230,173,0.08);
+      border-radius: 999px;
+      color: #c9ffed;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(71,230,173,0.12);
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 8px;
+      color: var(--soft);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(5, 8, 17, 0.72);
+      color: var(--text);
+      outline: none;
+      padding: 16px 15px;
+      border-radius: 17px;
+      font-size: 15px;
+      transition: border 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    input::placeholder {
+      color: rgba(156,168,207,0.62);
+    }
+
+    input:focus {
+      border-color: rgba(124, 92, 255, 0.8);
+      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.14);
+      background: rgba(5, 8, 17, 0.92);
+    }
+
+    .password-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(255,255,255,0.045);
+      border-radius: 17px;
+      padding: 0 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .main-btn {
+      width: 100%;
+      border: 0;
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent), #5c43da);
+      color: white;
+      font-size: 15px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 16px 36px rgba(124, 92, 255, 0.30);
+      transition: transform 160ms ease, opacity 160ms ease;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .main-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .quick-links a {
+      text-decoration: none;
+      color: var(--soft);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 12px 13px;
+      font-size: 13px;
+      font-weight: 850;
+      transition: background 160ms ease, border 160ms ease;
+    }
+
+    .quick-links a:hover {
+      background: rgba(124,92,255,0.12);
+      border-color: rgba(124,92,255,0.34);
+    }
+
+    .notice {
+      display: none;
+      margin-top: 16px;
+      border: 1px solid rgba(255,112,112,0.30);
+      background: rgba(255,112,112,0.10);
+      color: #ffd4d4;
+      padding: 12px;
+      border-radius: 15px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .notice.ok {
+      border-color: rgba(71,230,173,0.30);
+      background: rgba(71,230,173,0.10);
+      color: #d3fff0;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+        padding: 22px 14px;
+      }
+
+      .hero {
+        padding: 8px 4px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="brand">
+        <span class="logo">2F</span>
+        <span>2FLY!GALLERIA SYSTEM</span>
+      </div>
+
+      <h1>Control the orders. Track the money. Protect the business.</h1>
+
+      <p>
+        Login to manage orders, payments, expenses, shipment tracking, and owner pay
+        in one private 2FLY control center.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <strong>Orders + Shipping</strong>
+          <span>Track order status, packed by, released by, courier, and shipping profit.</span>
+        </div>
+        <div class="feature">
+          <strong>Payments</strong>
+          <span>Verify GCash/Cash payments and count only real verified money in.</span>
+        </div>
+        <div class="feature">
+          <strong>Expenses</strong>
+          <span>Owner-only business, supplier, and personal advance tracking.</span>
+        </div>
+        <div class="feature">
+          <strong>Finance</strong>
+          <span>Calculate profit, owner pay, and remaining business cash.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="login-card">
+      <div class="login-inner">
+        <div class="card-head">
+          <div>
+            <h2>Welcome back</h2>
+            <p>Enter your username and password to continue.</p>
+          </div>
+          <div class="status-chip">
+            <span class="dot"></span>
+            Secure
+          </div>
+        </div>
+
+        <form id="loginForm">
+          <label for="email">Username / Email</label>
+          <input id="email" type="email" autocomplete="username" required placeholder="Enter username or email" />
+
+          <label for="password">Password</label>
+          <div class="password-row">
+            <input id="password" type="password" autocomplete="current-password" required placeholder="Enter password" />
+            <button id="togglePassword" class="mini-btn" type="button">Show</button>
+          </div>
+
+          <button id="loginBtn" class="main-btn" type="submit">Login to Dashboard</button>
+        </form>
+
+        <div class="quick-links">
+          <a href="./orderpage.html">Orders</a>
+          <a href="./payments.html">Payments</a>
+          <a href="./expenses.html">Expenses</a>
+          <a href="./finance.html">Finance</a>
+        </div>
+
+        <div id="notice" class="notice"></div>
+
+        <p class="footer-note">
+          Use your Supabase login account. Your email is not shown by default for privacy.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const notice = document.getElementById("notice");
+    const loginBtn = document.getElementById("loginBtn");
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+
+    const showNotice = (message, ok = false) => {
+      notice.textContent = message;
+      notice.className = "notice" + (ok ? " ok" : "");
+      notice.style.display = "block";
+    };
+
+    const hideNotice = () => {
+      notice.textContent = "";
+      notice.style.display = "none";
+    };
+
+    const supa = window.supabase.createClient(
+      window.__SUPABASE_URL__,
+      window.__SUPABASE_ANON_KEY__
+    );
+
+    togglePassword.addEventListener("click", () => {
+      const visible = password.type === "text";
+      password.type = visible ? "password" : "text";
+      togglePassword.textContent = visible ? "Show" : "Hide";
+    });
+
+    async function boot() {
+      if (!window.__SUPABASE_URL__ || !window.__SUPABASE_ANON_KEY__) {
+        showNotice("Missing Supabase config. Paste your Supabase URL and anon key inside index.html.");
+        return;
+      }
+
+      const { data } = await supa.auth.getSession();
+
+      if (data && data.session) {
+        showNotice("You are already logged in. Opening Orders…", true);
+        setTimeout(() => {
+          location.href = "./orderpage.html";
+        }, 650);
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      hideNotice();
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Logging in…";
+
+      try {
+        const email = document.getElementById("email").value.trim();
+        const passwordValue = password.value;
+
+        const { error } = await supa.auth.signInWithPassword({
+          email,
+          password: passwordValue
+        });
+
+        if (error) throw error;
+
+        showNotice("Login successful. Opening Orders…", true);
+        setTimeout(() => {
+          location.href = "./orderpage.html";
+        }, 450);
+      } catch (error) {
+        showNotice(error.message || "Login failed. Check your username and password.");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login to Dashboard";
+      }
+    });
+
+    boot();
+  </script>
+</body>
+</html>
